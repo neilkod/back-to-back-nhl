@@ -182,9 +182,6 @@ body {
 
 /* ===== controls bar: paper, not glass ===== */
 .controls-bar {
-  position: sticky;
-  top: 0;
-  z-index: 20;
   background: var(--controls-bg);
   border-bottom: 2px dashed var(--border-bright);
 }
@@ -198,9 +195,15 @@ body {
 }
 @media (min-width: 800px) {
   .controls-inner {
-    grid-template-columns: 1.2fr 1fr auto;
+    grid-template-columns: 1fr auto;
+    grid-template-areas:
+      "slider stat"
+      "teams  teams";
     align-items: start;
   }
+  .slider-section { grid-area: slider; }
+  .live-stat { grid-area: stat; }
+  .team-filter { grid-area: teams; }
 }
 
 .control-label {
@@ -357,7 +360,7 @@ body {
   font-weight: 400;
   font-size: 0.95rem;
   color: var(--text-dim);
-  align-self: center;
+  align-self: start;
   background: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
@@ -371,12 +374,6 @@ main#results {
   max-width: 960px;
   margin: 0 auto;
   padding: 1.5rem 1.25rem 3rem;
-  /* keeps the skip-link target from landing underneath the sticky controls
-     bar, which is much taller on narrow screens where its contents stack */
-  scroll-margin-top: 400px;
-}
-@media (min-width: 800px) {
-  main#results { scroll-margin-top: 200px; }
 }
 
 .hero-callout {
