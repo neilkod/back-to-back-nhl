@@ -358,46 +358,6 @@ body {
 }
 .live-stat strong { color: var(--ice); font-size: 1.15rem; }
 
-/* ===== corridor schematic ===== */
-.corridor-schematic-wrap {
-  border-bottom: 1px solid var(--border);
-  background: var(--bg-raised);
-}
-.corridor-schematic-inner {
-  max-width: 960px;
-  margin: 0 auto;
-  padding: 1rem 1.25rem;
-  overflow-x: auto;
-}
-.corridor-schematic svg { display: block; min-width: 560px; }
-.corridor-hint {
-  max-width: 960px;
-  margin: 0 auto;
-  padding: 0 1.25rem 0.85rem;
-  font-size: 0.78rem;
-  color: var(--text-faint);
-  text-align: center;
-  display: none;
-}
-@media (max-width: 640px) {
-  .corridor-hint { display: block; }
-}
-.corridor-node-label {
-  font-family: var(--font-body);
-  font-size: 11px;
-  fill: var(--text-dim);
-}
-.corridor-link {
-  stroke: var(--border-bright);
-  stroke-width: 2;
-  transition: stroke var(--motion-med), stroke-width var(--motion-med), opacity var(--motion-med);
-  opacity: 0.35;
-}
-.corridor-link.active {
-  opacity: 1;
-  stroke-width: 3;
-}
-
 /* ===== results ===== */
 main#results {
   max-width: 960px;

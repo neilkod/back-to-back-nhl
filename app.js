@@ -72,60 +72,6 @@ function renderTeamChips() {
   }
 }
 
-/* ===== corridor schematic ===== */
-const CORRIDOR_POS = {
-  BOS: [50, 34], NYR: [170, 40], NYI: [232, 66], NJ: [206, 104],
-  PHI: [330, 104], WSH: [470, 104], LA: [70, 156], ANA: [170, 156],
-};
-
-function renderCorridor() {
-  const host = document.getElementById("corridor");
-  const tolerance = currentTolerance();
-  const edges = Object.keys(DATA.travel);
-  const svgNS = "http://www.w3.org/2000/svg";
-  const svg = document.createElementNS(svgNS, "svg");
-  svg.setAttribute("viewBox", "0 0 560 190");
-  svg.setAttribute("role", "img");
-  svg.setAttribute("aria-label", "Schematic map of arenas; links light up as travel tolerance rises");
-  svg.setAttribute("height", "190");
-
-  for (const key of edges) {
-    const [a, b] = key.split("-");
-    if (!CORRIDOR_POS[a] || !CORRIDOR_POS[b]) continue;
-    const [x1, y1] = CORRIDOR_POS[a];
-    const [x2, y2] = CORRIDOR_POS[b];
-    const active = isLinkable(a, b, tolerance);
-    const line = document.createElementNS(svgNS, "line");
-    line.setAttribute("x1", x1); line.setAttribute("y1", y1);
-    line.setAttribute("x2", x2); line.setAttribute("y2", y2);
-    line.setAttribute("class", "corridor-link" + (active ? " active" : ""));
-    if (active) line.setAttribute("stroke", DATA.teams[a].color);
-    svg.appendChild(line);
-  }
-
-  for (const abbr of TEAM_ORDER) {
-    const [x, y] = CORRIDOR_POS[abbr];
-    const circle = document.createElementNS(svgNS, "circle");
-    circle.setAttribute("cx", x); circle.setAttribute("cy", y); circle.setAttribute("r", 9);
-    circle.setAttribute("fill", DATA.teams[abbr].color);
-    circle.setAttribute("stroke", "var(--bg-raised)");
-    circle.setAttribute("stroke-width", "2");
-    const enabled = state.enabledTeams.has(abbr);
-    circle.setAttribute("opacity", enabled ? "1" : "0.25");
-    svg.appendChild(circle);
-
-    const label = document.createElementNS(svgNS, "text");
-    label.setAttribute("x", x); label.setAttribute("y", y - 14);
-    label.setAttribute("text-anchor", "middle");
-    label.setAttribute("class", "corridor-node-label");
-    label.textContent = abbr;
-    svg.appendChild(label);
-  }
-
-  host.innerHTML = "";
-  host.appendChild(svg);
-}
-
 /* ===== results rendering ===== */
 function pluralNights(n) { return n === 1 ? "night" : "nights"; }
 function pluralGames(n) { return n === 1 ? "game" : "games"; }
@@ -280,7 +226,6 @@ function render() {
     `At this range: <strong>${data.totalRuns}</strong> ${pluralTrips(data.totalRuns)} of up to <strong>${data.maxRange}</strong> ${pluralNights(data.maxRange)}`;
 
   renderResults(data, tolerance);
-  renderCorridor();
 }
 
 /* ===== init ===== */
