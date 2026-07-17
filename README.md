@@ -1,0 +1,52 @@
+# Back-to-Back — 2026-27 NHL Trip Planner
+
+A static site that finds runs of consecutive-night NHL home games you can
+actually travel between, for 8 East Coast + Southern California teams
+(Rangers, Islanders, Devils, Capitals, Flyers, Bruins, Kings, Ducks).
+
+Slide the travel-tolerance slider, filter to the teams you care about, and
+get trip cards grouped by trip length — each with a per-night itinerary,
+travel hops, doubleheader flags, swappable alternate games, and a
+copy-to-clipboard summary. See [`how.html`](how.html) for a walkthrough of
+the algorithm.
+
+No backend, no build step, no external runtime dependencies (besides the
+Google Fonts stylesheet). The full schedule and travel-time dataset are
+embedded directly in `algo.js`.
+
+## Running it locally
+
+Any static file server works. From this directory:
+
+```
+python3 -m http.server 8000
+```
+
+Then open http://localhost:8000/ in a browser. (Opening `index.html`
+directly via `file://` also works in most browsers, since there's no fetch
+call — the data is inlined in `algo.js`.)
+
+## Files
+
+- `index.html` / `app.js` — the planner UI
+- `how.html` / `how.js` — "how this works" page, calls the same algorithm
+  functions as the planner (nothing is reimplemented)
+- `algo.js` — embedded dataset + the pure algorithm functions shared by both
+  pages (no DOM code)
+- `styles.css` — shared stylesheet for both pages
+- `.nojekyll` — tells GitHub Pages not to run this through Jekyll
+
+## Deploying to GitHub Pages
+
+1. Push this directory to a GitHub repo (as the repo root, or a subfolder —
+   adjust the Pages source accordingly).
+2. In the repo, go to **Settings → Pages**.
+3. Under **Build and deployment**, set **Source** to "Deploy from a branch".
+4. Pick the branch (e.g. `main`) and the folder this site lives in (`/` or
+   `/docs`), then save.
+5. GitHub will publish at `https://<username>.github.io/<repo>/` within a
+   minute or two. The `.nojekyll` file is already in place so Jekyll won't
+   try (and fail) to process the plain HTML/CSS/JS.
+
+No environment variables, secrets, or server config are needed — it's a
+pure static site.

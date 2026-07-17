@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<script src="theme.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Back-to-Back — 2026-27 NHL Trip Planner</title>
+<meta name="description" content="Find runs of consecutive nights of NHL hockey you can actually travel between.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<a class="skip-link" href="#results">Skip to results</a>
+
+<header class="hero">
+  <div class="hero-inner">
+    <nav class="topnav">
+      <span class="brand">Back-to-Back</span>
+      <div class="topnav-right">
+        <a href="how.html">How it works</a>
+        <button type="button" class="theme-toggle" id="theme-toggle"></button>
+      </div>
+    </nav>
+    <h1>Back-to-Back<span class="hero-year">2026&ndash;27</span></h1>
+    <p class="subtitle">Find runs of consecutive nights of NHL hockey you can actually travel between.</p>
+  </div>
+</header>
+
+<div class="controls-bar" id="controls">
+  <div class="controls-inner">
+
+    <section class="slider-section" aria-labelledby="slider-title">
+      <h2 id="slider-title" class="control-label">Travel tolerance</h2>
+      <div class="slider-readout">
+        <span class="slider-value-label" id="slider-value-label">Full corridor</span>
+        <span class="slider-value-hours" id="slider-value-hours">3.0h</span>
+      </div>
+      <input type="range" id="tolerance-slider" class="tolerance-slider"
+             min="0" max="4" step="1" value="3"
+             aria-describedby="slider-helper" aria-valuetext="Full corridor, 3.0 hours">
+      <div class="stop-ticks" id="stop-ticks" aria-hidden="true"></div>
+      <p class="slider-helper" id="slider-helper">Longer Amtrak legs (e.g. NY ↔ DC) — the whole Northeast chain connects</p>
+    </section>
+
+    <section class="team-filter" aria-labelledby="team-filter-title">
+      <div class="team-filter-header">
+        <h2 id="team-filter-title" class="control-label">Teams</h2>
+        <div class="team-filter-actions">
+          <button type="button" class="quick-action" id="teams-all">All</button>
+          <button type="button" class="quick-action" id="teams-none">None</button>
+        </div>
+      </div>
+      <div class="team-chips" id="team-chips"></div>
+    </section>
+
+    <div class="live-stat" id="live-stat" aria-live="polite"></div>
+  </div>
+</div>
+
+<section class="corridor-schematic-wrap" id="corridor-wrap" aria-hidden="true">
+  <div class="corridor-schematic-inner">
+    <div class="corridor-schematic" id="corridor"></div>
+  </div>
+</section>
+
+<main id="results" aria-live="polite"></main>
+
+<footer class="site-footer">
+  <p id="footer-note"></p>
+  <p class="footer-credit">2026-27 season. No tracking, no analytics.</p>
+</footer>
+
+<script src="algo.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

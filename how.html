@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<script src="theme.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>How this works — Back-to-Back</title>
+<meta name="description" content="How the Back-to-Back trip planner finds travelable runs of NHL home games.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<a class="skip-link" href="#how-content">Skip to content</a>
+
+<header class="hero hero-compact">
+  <div class="hero-inner">
+    <nav class="topnav">
+      <span class="brand">Back-to-Back</span>
+      <div class="topnav-right">
+        <a href="index.html">← Back to planner</a>
+        <button type="button" class="theme-toggle" id="theme-toggle"></button>
+      </div>
+    </nav>
+    <h1>How this works</h1>
+    <p class="subtitle">The whole planner is four small, plain functions. Here's what each one does, in the order it runs.</p>
+  </div>
+</header>
+
+<main id="how-content" class="how-page">
+
+  <section>
+    <p>
+      Every team here plays roughly 40 home games a season. If you plot only the home games on a
+      calendar, some nights line up back-to-back — but "on the calendar next to each other" only
+      matters if you could actually <em>get</em> from arena A to arena B in time. That's the one rule
+      driving everything below: a trip is a chain of consecutive-night home games where every hop
+      between arenas is a travel time you're willing to make.
+    </p>
+  </section>
+
+  <section>
+    <h2>1. The link test</h2>
+    <p>
+      Two games — any two, any nights — are "linkable" at a given tolerance if the drive/train/flight
+      time between their arenas is at or under that tolerance. That's it; travel time is a fixed lookup
+      table between arena pairs, not a distance calculation.
+    </p>
+    <pre><code>function isLinkable(a, b, tolerance) {
+  const h = getTravelHours(a, b);
+  return h !== null && h &lt;= tolerance;
+}</code></pre>
+    <p>
+      A missing table entry means "not reachable at any tolerance" — that's how, for example, the
+      California teams (Kings, Ducks) stay structurally cut off from every Eastern team on this board,
+      at every slider stop.
+    </p>
+    <div class="mini-slider-demo" id="link-demo" aria-hidden="false"></div>
+  </section>
+
+  <section>
+    <h2>2. The streak sweep — and the trap in the obvious version</h2>
+    <p>
+      The naive way to find a run: walk the calendar day by day, and keep the streak alive as long as
+      <em>some</em> team playing tonight links to <em>some</em> team playing tomorrow night. That sounds
+      right, but it isn't — because on a night with several games, the specific team your itinerary is
+      riding might not be the team that supplies tomorrow's link.
+    </p>
+    <p class="aha">
+      Concretely: from Jan 8–14 this season, the only linkable game each night is an LA ↔ Anaheim shuttle
+      (0.75h apart). Meanwhile Washington and Boston happen to play games on some of those same calendar
+      dates that <em>would</em> pairwise-link to Jan 15's Islanders game. A naive pairwise test sees that
+      coincidence and calls the whole Jan 8–28 span one 21-night run. But nobody is actually playing
+      Washington or Boston those nights — your itinerary is stuck on the LA/Anaheim shuttle, and Anaheim
+      has no travel-table entry to the Islanders at all. There's no way to actually ride that "run."
+    </p>
+    <p>
+      The fix is to track a <strong>frontier</strong>: the actual set of games your itinerary could be
+      sitting at tonight, given how it got here. Tomorrow only extends the streak if at least one of
+      tomorrow's games links to at least one game in <em>tonight's frontier</em> — not to any game that
+      happens to be on the calendar.
+    </p>
+    <pre><code>function findRunDateGroups(dateMap, dates, tolerance) {
+  const groups = [];
+  let currentDates = null, frontier = null;
+  for (const date of dates) {
+    const dayGames = dateMap[date];
+    if (currentDates) {
+      const prevDate = currentDates[currentDates.length - 1];
+      if (isNextCalendarDay(prevDate, date)) {
+        const nextFrontier = dayGames.filter((g) =>
+          frontier.some((h) => isLinkable(h.abbr, g.abbr, tolerance)));
+        if (nextFrontier.length > 0) {
+          currentDates.push(date);
+          frontier = nextFrontier;
+          continue;
+        }
+      }
+      groups.push(currentDates);
+    }
+    currentDates = [date];
+    frontier = dayGames;
+  }
+  if (currentDates) groups.push(currentDates);
+  return groups.filter((g) => g.length >= 2);
+}</code></pre>
+    <p>
+      With the frontier fix, that span correctly splits into a 7-night West Coast run (Jan 8–14) and a
+      genuine 14-night corridor run (Jan 15–28) — which is the real longest trip on the board, even at
+      the widest "Add Boston" setting.
+    </p>
+  </section>
+
+  <section>
+    <h2>3. Turning "a run exists" into an actual itinerary</h2>
+    <p>
+      Knowing a run's date range isn't the same as knowing which game to attend each night — some nights
+      have several home games in range, and a choice early in the run can dead-end later. So the planner
+      makes two passes over each run:
+    </p>
+    <p>
+      <strong>Backward pass</strong> — starting from the last night and working back, keep only the games
+      that can still reach the end of the run:
+    </p>
+    <pre><code>function computeViableGames(runDates, dateMap, tolerance) {
+  const n = runDates.length;
+  const viable = new Array(n);
+  viable[n - 1] = dateMap[runDates[n - 1]].slice();
+  for (let i = n - 2; i >= 0; i--) {
+    const nextViable = viable[i + 1];
+    viable[i] = dateMap[runDates[i]].filter((g) =>
+      nextViable.some((h) => isLinkable(g.abbr, h.abbr, tolerance)));
+  }
+  return viable;
+}</code></pre>
+    <p>
+      <strong>Forward pass</strong> — walk night to night picking the shortest hop from wherever the
+      itinerary currently is, only choosing among the games the backward pass proved viable. This is what
+      builds the trip card you actually see, and it's also what re-runs (instantly — the dataset is tiny)
+      whenever you swap a night to an alternate team.
+    </p>
+  </section>
+
+  <section>
+    <h2>4. Doubleheaders</h2>
+    <p>
+      Same night, two teams, both playing at home: flagged as a doubleheader if their start times are at
+      least 4.5 hours apart <em>and</em> their arenas are linkable at the current tolerance — enough gap
+      to catch a matinee, travel, and still make the evening game.
+    </p>
+    <pre><code>function findDoubleheader(dayGames, tolerance) {
+  for (const g1 of dayGames) for (const g2 of dayGames) {
+    const gap = Math.abs(g1.hour - g2.hour);
+    if (gap >= 4.5 && isLinkable(g1.abbr, g2.abbr, tolerance)) {
+      return { matinee: /* earlier */ g1, evening: /* later */ g2, gap };
+    }
+  }
+}</code></pre>
+  </section>
+
+  <section>
+    <h2>Worked example: the 14-night corridor run</h2>
+    <p>
+      This table is generated live, on this page, by calling the exact same <code>computeTrips()</code>
+      used on the planner — set to "Full corridor" (3.0h) with every team enabled. It's the longest run in
+      the whole dataset.
+    </p>
+    <div id="worked-example"></div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <p id="footer-note-how"></p>
+  <p class="footer-credit">2026-27 season. No tracking, no analytics.</p>
+</footer>
+
+<script src="algo.js"></script>
+<script src="how.js"></script>
+</body>
+</html>
