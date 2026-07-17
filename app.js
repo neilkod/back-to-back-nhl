@@ -30,6 +30,23 @@ function el(tag, attrs, children) {
   return node;
 }
 
+/* ===== team logos, with a text fallback if the NHL's CDN doesn't load ===== */
+function teamLogo(abbr, className) {
+  const team = DATA.teams[abbr];
+  const img = el("img", {
+    class: `${className}-logo`,
+    src: teamLogoUrl(abbr),
+    alt: "",
+    loading: "lazy",
+    onerror: function (e) {
+      e.target.style.display = "none";
+      e.target.nextElementSibling.style.display = "inline-flex";
+    },
+  }, []);
+  const fallback = el("span", { class: `${className}-fallback`, text: team.abbr }, []);
+  return [img, fallback];
+}
+
 /* ===== slider ===== */
 function renderStopTicks() {
   const wrap = document.getElementById("stop-ticks");
@@ -59,6 +76,8 @@ function renderTeamChips() {
         class: "team-chip",
         style: `--chip-color:${team.color}`,
         "aria-pressed": String(enabled),
+        "aria-label": team.name,
+        title: team.name,
         onclick: () => {
           if (state.enabledTeams.has(abbr)) state.enabledTeams.delete(abbr);
           else state.enabledTeams.add(abbr);
@@ -66,7 +85,7 @@ function renderTeamChips() {
           render();
         },
       },
-      [el("span", { class: "dot" }, []), document.createTextNode(team.abbr)]
+      teamLogo(abbr, "team-chip")
     );
     wrap.appendChild(chip);
   }
@@ -121,7 +140,7 @@ function renderNightRow(run, night, tolerance) {
     for (const g of games) {
       const t = DATA.teams[g.abbr];
       mainChildren.push(el("div", { class: "doubleheader-game" }, [
-        el("span", {}, [document.createTextNode(`${t.name} vs ${g.opp}`)]),
+        el("span", { class: "dh-team-name" }, [...teamLogo(g.abbr, "dh"), document.createTextNode(`${t.name} vs ${g.opp}`)]),
         el("span", { class: "night-time", text: g.time }, []),
       ]));
       if (g !== games[games.length - 1]) mainChildren.push(el("div", { class: "doubleheader-arrow", text: "↓ same day" }, []));
@@ -141,20 +160,21 @@ function renderNightRow(run, night, tolerance) {
         class: "alt-chip",
         style: `--alt-color:${altTeam.color}`,
         "aria-pressed": String(pressed),
+        "aria-label": `${altTeam.name}, ${alt.time}`,
         title: `${altTeam.name}, ${alt.time}`,
         onclick: () => {
           if (!state.overrides[run.key]) state.overrides[run.key] = {};
           state.overrides[run.key][night.date] = alt.abbr;
           render();
         },
-      }, [document.createTextNode(altTeam.abbr)]));
+      }, teamLogo(alt.abbr, "alt-chip")));
     }
     mainChildren.push(picker);
   }
 
   const row = el("li", { class: "night-row" }, [
     el("div", { class: "night-date", text: formatDateShort(night.date) }, []),
-    el("div", { class: "night-stripe", style: `--stripe-color:${team.color}` }, []),
+    el("div", { class: "night-seal", style: `--stripe-color:${team.color}` }, teamLogo(night.game.abbr, "night-seal")),
     el("div", { class: "night-main" }, mainChildren),
     night.doubleheader ? null : el("div", { class: "night-time", text: night.game.time }, []),
   ]);

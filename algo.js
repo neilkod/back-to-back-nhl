@@ -18,6 +18,14 @@ const DOUBLEHEADER_MIN_GAP = 4.5;
 
 const TEAM_ORDER = Object.keys(DATA.teams);
 
+/* ---- team logos, served from the NHL's own CDN. Two of our internal
+   abbreviations (NJ, LA) are shortened for display and travel-matrix keys;
+   the actual logo filenames use the NHL's official abbreviations. ---- */
+const NHL_LOGO_ABBR = { NYR: "NYR", NYI: "NYI", NJ: "NJD", WSH: "WSH", PHI: "PHI", BOS: "BOS", LA: "LAK", ANA: "ANA" };
+function teamLogoUrl(abbr) {
+  return `https://assets.nhle.com/logos/nhl/svg/${NHL_LOGO_ABBR[abbr] || abbr}_light.svg`;
+}
+
 /* ---- travel lookups ---- */
 function getTravelHours(a, b) {
   if (a === b) return 0;
