@@ -610,6 +610,13 @@ main#results {
   line-height: 1.65;
   margin: 0 0 1rem;
 }
+.about-links a {
+  color: var(--ice);
+  text-decoration: none;
+  font-weight: 600;
+  border-bottom: 1px solid transparent;
+}
+.about-links a:hover, .about-links a:focus-visible { border-bottom-color: currentColor; }
 
 /* ===== footer ===== */
 .site-footer {
