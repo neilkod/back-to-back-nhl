@@ -22,6 +22,8 @@
   --shadow-card: 0 8px 24px -8px rgba(0, 0, 0, 0.5);
   --motion-fast: 200ms;
   --motion-med: 340ms;
+  --code-text: #cfe8ff;
+  --controls-bg: rgba(10, 14, 20, 0.92);
 }
 
 @media (prefers-color-scheme: light) {
@@ -38,6 +40,8 @@
     --border: #d7dfe7;
     --border-bright: #c1ccd8;
     --shadow-card: 0 8px 24px -10px rgba(20, 40, 60, 0.18);
+    --code-text: #0b3350;
+    --controls-bg: rgba(238, 242, 246, 0.92);
   }
 }
 
@@ -56,6 +60,8 @@
   --border: #d7dfe7;
   --border-bright: #c1ccd8;
   --shadow-card: 0 8px 24px -10px rgba(20, 40, 60, 0.18);
+  --code-text: #0b3350;
+  --controls-bg: rgba(238, 242, 246, 0.92);
 }
 :root[data-theme="dark"] {
   --bg: #0a0e14;
@@ -70,6 +76,8 @@
   --border: #223042;
   --border-bright: #2e4155;
   --shadow-card: 0 8px 24px -8px rgba(0, 0, 0, 0.5);
+  --code-text: #cfe8ff;
+  --controls-bg: rgba(10, 14, 20, 0.92);
 }
 
 * { box-sizing: border-box; }
@@ -176,12 +184,9 @@ body {
   position: sticky;
   top: 0;
   z-index: 20;
-  background: rgba(10, 14, 20, 0.92);
+  background: var(--controls-bg);
   backdrop-filter: blur(10px);
   border-bottom: 1px solid var(--border);
-}
-@media (prefers-color-scheme: light) {
-  .controls-bar { background: rgba(238, 242, 246, 0.92); }
 }
 .controls-inner {
   max-width: 960px;
@@ -365,6 +370,18 @@ body {
   overflow-x: auto;
 }
 .corridor-schematic svg { display: block; min-width: 560px; }
+.corridor-hint {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0 1.25rem 0.85rem;
+  font-size: 0.78rem;
+  color: var(--text-faint);
+  text-align: center;
+  display: none;
+}
+@media (max-width: 640px) {
+  .corridor-hint { display: block; }
+}
 .corridor-node-label {
   font-family: var(--font-body);
   font-size: 11px;
@@ -386,6 +403,12 @@ main#results {
   max-width: 960px;
   margin: 0 auto;
   padding: 1.5rem 1.25rem 3rem;
+  /* keeps the skip-link target from landing underneath the sticky controls
+     bar, which is much taller on narrow screens where its contents stack */
+  scroll-margin-top: 400px;
+}
+@media (min-width: 800px) {
+  main#results { scroll-margin-top: 200px; }
 }
 
 .hero-callout {
@@ -568,6 +591,26 @@ main#results {
 }
 .doubleheader-arrow { color: var(--text-faint); font-size: 0.78rem; padding-left: 0.2rem; }
 
+/* ===== about note ===== */
+.about-note {
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 1.5rem 1.25rem 0;
+  border-top: 1px solid var(--border);
+}
+.about-note h2 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.3rem;
+  margin: 1.5rem 0 0.9rem;
+}
+.about-note p {
+  color: var(--text-dim);
+  font-size: 0.95rem;
+  line-height: 1.65;
+  margin: 0 0 1rem;
+}
+
 /* ===== footer ===== */
 .site-footer {
   max-width: 960px;
@@ -609,10 +652,7 @@ main#results {
   overflow-x: auto;
   font-size: 0.85rem;
   line-height: 1.5;
-  color: #cfe8ff;
-}
-@media (prefers-color-scheme: light) {
-  .how-page pre { color: #0b3350; }
+  color: var(--code-text);
 }
 .how-page .aha {
   border-left: 3px solid var(--focus);
