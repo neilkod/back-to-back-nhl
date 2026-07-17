@@ -1,8 +1,8 @@
 "use strict";
-/* Back-to-Back — rendering + interactions. Depends on algo.js (loaded first). */
+/* Back-to-Back: rendering + interactions. Depends on algo.js (loaded first). */
 
 const state = {
-  sliderIndex: 3, // default to "Full corridor" — the stop where the corridor first fully connects
+  sliderIndex: 3, // default to "Full corridor," where the whole Northeast chain connects
   enabledTeams: new Set(TEAM_ORDER),
   overrides: Object.create(null), // runKey -> { date: abbr }
 };
@@ -78,10 +78,10 @@ function pluralGames(n) { return n === 1 ? "game" : "games"; }
 function pluralTrips(n) { return n === 1 ? "trip" : "trips"; }
 
 function tripItineraryText(run) {
-  const lines = [`${formatDateFull(run.startDate)} – ${formatDateFull(run.endDate)} — ${run.range} ${pluralNights(run.range)}, ${run.games} ${pluralGames(run.games)}`];
+  const lines = [`${formatDateFull(run.startDate)} to ${formatDateFull(run.endDate)}: ${run.range} ${pluralNights(run.range)}, ${run.games} ${pluralGames(run.games)}`];
   for (const n of run.nights) {
     const team = DATA.teams[n.game.abbr];
-    lines.push(`${formatDateShort(n.date)}: ${team.fullName} vs ${n.game.opp} — ${n.game.time} @ ${team.arena}, ${team.city}`);
+    lines.push(`${formatDateShort(n.date)}: ${team.fullName} vs ${n.game.opp}, ${n.game.time} @ ${team.arena}, ${team.city}`);
     if (n.doubleheader) {
       const other = n.doubleheader.matinee.abbr === n.game.abbr ? n.doubleheader.evening : n.doubleheader.matinee;
       const otherTeam = DATA.teams[other.abbr];
@@ -116,7 +116,7 @@ function renderNightRow(run, night, tolerance) {
 
   const mainChildren = [];
   if (night.doubleheader) {
-    mainChildren.push(el("span", { class: "doubleheader-badge", text: `Doubleheader — 2 games!` }, []));
+    mainChildren.push(el("span", { class: "doubleheader-badge", text: `Doubleheader: 2 games` }, []));
     const games = [night.doubleheader.matinee, night.doubleheader.evening];
     for (const g of games) {
       const t = DATA.teams[g.abbr];
@@ -141,7 +141,7 @@ function renderNightRow(run, night, tolerance) {
         class: "alt-chip",
         style: `--alt-color:${altTeam.color}`,
         "aria-pressed": String(pressed),
-        title: `${altTeam.name} — ${alt.time}`,
+        title: `${altTeam.name}, ${alt.time}`,
         onclick: () => {
           if (!state.overrides[run.key]) state.overrides[run.key] = {};
           state.overrides[run.key][night.date] = alt.abbr;
@@ -166,7 +166,7 @@ function renderNightRow(run, night, tolerance) {
 function renderTripCard(run, tolerance) {
   const header = el("div", { class: "trip-card-header" }, [
     el("div", {}, [
-      el("div", { class: "trip-card-dates", text: `${formatDateFull(run.startDate)} – ${formatDateFull(run.endDate)}` }, []),
+      el("div", { class: "trip-card-dates", text: `${formatDateFull(run.startDate)} to ${formatDateFull(run.endDate)}` }, []),
       el("div", { class: "game-count-note", text: run.games > run.range ? `${run.range} ${pluralNights(run.range)} · ${run.games} ${pluralGames(run.games)}` : `${run.games} ${pluralGames(run.games)}` }, []),
     ]),
     el("div", { class: "trip-card-badges" }, [
@@ -189,7 +189,7 @@ function renderResults(data, tolerance) {
 
   if (data.rangeGroups.length === 0) {
     main.appendChild(el("div", { class: "empty-state" }, [
-      document.createTextNode("No multi-night runs at this range — widen your travel or add teams."),
+      document.createTextNode("No multi-night runs at this range. Widen your travel tolerance or add teams."),
     ]));
     return;
   }

@@ -1,4 +1,4 @@
-/* ===== Back-to-Back — rink-inspired dark theme ===== */
+/* ===== Back-to-Back: rink-inspired dark theme ===== */
 
 :root {
   --bg: #0a0e14;
@@ -45,8 +45,9 @@
   }
 }
 
-/* Manual theme toggle overrides — win over the system prefers-color-scheme
-   query in either direction once the visitor picks a theme explicitly. */
+/* Manual theme toggle overrides. These win over the system
+   prefers-color-scheme query in either direction once the visitor picks a
+   theme explicitly. */
 :root[data-theme="light"] {
   --bg: #eef2f6;
   --bg-raised: #ffffff;

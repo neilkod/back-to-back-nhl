@@ -10,7 +10,7 @@
   try {
     stored = localStorage.getItem(STORAGE_KEY);
   } catch (e) {
-    /* storage unavailable (private browsing, etc.) — fall back to system preference */
+    /* storage unavailable (private browsing, etc.). fall back to system preference */
   }
 
   function apply(theme) {
@@ -44,7 +44,7 @@
       try {
         localStorage.setItem(STORAGE_KEY, stored);
       } catch (e) {
-        /* ignore — theme just won't persist across reloads */
+        /* ignore. theme just won't persist across reloads */
       }
       updateButton();
     });

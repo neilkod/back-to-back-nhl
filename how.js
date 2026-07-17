@@ -1,6 +1,6 @@
 "use strict";
-/* Back-to-Back — "how it works" page. Depends on algo.js (loaded first).
-   Every demo below calls the real algorithm functions — nothing here
+/* Back-to-Back: "how it works" page. Depends on algo.js (loaded first).
+   Every demo below calls the real algorithm functions. Nothing here
    reimplements or hardcodes a result. */
 
 function el(tag, attrs, children) {
@@ -27,7 +27,7 @@ function renderLinkDemo() {
   for (const stop of SLIDER_STOPS) {
     const linkable = isLinkable(a, b, stop.hours);
     const card = el("div", { class: "mini-slider-card" }, [
-      el("h3", { text: `${stop.label} — ${stop.hours}h` }, []),
+      el("h3", { text: `${stop.label} (${stop.hours}h)` }, []),
       el("div", { class: linkable ? "link-ok" : "link-no", text: `${DATA.teams[a].name} ↔ ${DATA.teams[b].name}: ${hours}h` }, []),
       el("p", { text: linkable ? "Linkable at this tolerance." : "Not linkable yet." }, []),
     ]);
@@ -43,7 +43,7 @@ function renderWorkedExample() {
   const longest = rangeGroups[0].runs[0];
 
   wrap.appendChild(el("p", {}, [
-    `${formatDateFull(longest.startDate)} – ${formatDateFull(longest.endDate)}: ${longest.range} nights, ${longest.games} games.`,
+    `${formatDateFull(longest.startDate)} to ${formatDateFull(longest.endDate)}: ${longest.range} nights, ${longest.games} games.`,
   ]));
 
   for (const night of longest.nights) {
