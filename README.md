@@ -14,6 +14,21 @@ No backend, no build step, no external runtime dependencies (besides the
 Google Fonts stylesheet). The full schedule and travel-time dataset are
 embedded directly in `algo.js`.
 
+## Why I built this
+
+I'm a Sharks fan in San Jose. I used to fly to New York a lot for work, and
+I'd use the trips as an excuse to catch games. I took NJ Transit's Northeast
+Corridor line from Penn Station to Newark Penn, then walked over to
+Prudential Center for a Devils game. I also caught the Rangers at the
+Garden once. Still the best building I've been to for hockey.
+
+My son has never been to New York. His one bucket list item is an Islanders
+game at UBS Arena, just for the chants. I'm planning a short trip, two or
+three nights, and I don't want to waste a night on travel instead of a
+game. That's why I built this.
+
+If you're planning something longer, the slider goes out to Boston too.
+
 ## Running it locally
 
 Any static file server works. From this directory:
