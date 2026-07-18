@@ -17,13 +17,25 @@ prose. If you're about to type "—" or "–," stop and rephrase.
 
 ## Layout
 
-- `algo.js`: embedded 2026-27 dataset (13 teams + travel-time matrix) and all
+- `algo.js`: embedded 2026-27 dataset (18 teams + travel-time matrix) and all
   pure algorithm functions. No DOM code. Shared by both pages. Teams span
-  three structurally-independent clusters that never link to each other at
-  any tolerance: Northeast/Boston (NYR, NYI, NJ, WSH, PHI, BOS), West Coast
-  (LA, ANA), and Great Lakes (MTL, OTT, TOR, DET, BUF). The slider's last
-  stop (4.5h, "Great Lakes") exists specifically to bridge Ottawa to Toronto
-  (~4.4h), the widest link needed to connect that whole corridor.
+  four structurally-independent clusters that never link to each other at
+  any tolerance:
+  - Northeast/Boston: NYR, NYI, NJ, WSH, PHI, BOS
+  - Great Lakes: MTL, OTT, TOR, DET, BUF (needs the 4.5h stop to fully
+    connect, specifically Ottawa to Toronto at ~4.4h)
+  - West Coast/Southwest: LA, ANA, VGK, SJS, UTA. VGK joins LA/ANA at the
+    existing 4.5h stop (~4h either way). SJS needs the 6.0h stop to reach
+    LA/ANA (~5.2 to 5.75h). UTA only connects through VGK (~5.9h to Vegas),
+    not directly to LA/ANA/SJS, so it's reachable at 6.0h but only via that
+    path.
+  - Florida: FLA, TBL, a 2-team island like LA/ANA originally was, linked
+    at ~3.9h (already within the 4.0h stop). Deliberately not bridged to
+    the Northeast cluster (Tampa/Miami to DC is 900+ miles) even though
+    raising the ceiling made that a fair question to ask.
+  These clusters are intentionally never cross-linked. Don't add travel
+  entries between them without checking with Neil first, that's a real
+  product decision, not just a data-completeness one.
 - `index.html` / `app.js`: the planner UI.
 - `how.html` / `how.js`: algorithm walkthrough, calls the real `algo.js`
   functions rather than reimplementing them, including a live-generated

@@ -331,7 +331,7 @@ body {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  height: 3.6rem;
+  height: 4.6rem;
   padding: 0.2rem;
   background: none;
   border: none;
@@ -344,7 +344,7 @@ body {
 .team-chip-logo {
   height: 100%;
   width: auto;
-  max-width: 5rem;
+  max-width: 6.2rem;
   object-fit: contain;
 }
 .team-chip-fallback {
@@ -501,7 +501,7 @@ main#results {
 .night-list { list-style: none; margin: 0; padding: 0.4rem 1.1rem 1rem; }
 .night-row {
   display: grid;
-  grid-template-columns: 3.4em 46px 1fr auto;
+  grid-template-columns: 3.4em 58px 1fr auto;
   gap: 0.6rem;
   align-items: center;
   padding: 0.55rem 0;
@@ -517,8 +517,8 @@ main#results {
 }
 /* a bare team logo, not a full-height accent rail or a badge shell */
 .night-seal {
-  width: 46px;
-  height: 46px;
+  width: 58px;
+  height: 58px;
   align-self: center;
   display: flex;
   align-items: center;
@@ -550,7 +550,7 @@ main#results {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  height: 2.4rem;
+  height: 3rem;
   padding: 0.15rem;
   border-radius: var(--radius-sm);
   border: none;
@@ -559,7 +559,7 @@ main#results {
   opacity: 0.4;
   transition: opacity var(--motion-fast), background var(--motion-fast);
 }
-.alt-chip-logo { height: 100%; width: auto; max-width: 3.2rem; object-fit: contain; }
+.alt-chip-logo { height: 100%; width: auto; max-width: 3.9rem; object-fit: contain; }
 .alt-chip-fallback {
   display: none;
   font-family: var(--font-mono);
@@ -609,7 +609,7 @@ main#results {
   padding: 0.1rem 0;
 }
 .dh-team-name { display: inline-flex; align-items: center; gap: 0.4rem; }
-.dh-logo { width: 28px; height: 28px; object-fit: contain; flex: none; }
+.dh-logo { width: 34px; height: 34px; object-fit: contain; flex: none; }
 .dh-fallback {
   display: none;
   font-family: var(--font-mono);
@@ -750,8 +750,8 @@ main#results {
 .mini-slider-card .link-no { color: var(--text-faint); text-decoration: line-through; }
 
 @media (max-width: 560px) {
-  .night-row { grid-template-columns: 2.8em 46px 1fr; }
-  .night-row > .night-time { grid-column: 1 / -1; text-align: left; padding-left: calc(2.8em + 46px + 0.6rem); }
+  .night-row { grid-template-columns: 2.8em 52px 1fr; }
+  .night-row > .night-time { grid-column: 1 / -1; text-align: left; padding-left: calc(2.8em + 52px + 0.6rem); }
   .hop-row { padding-left: 2.8em; }
   .trip-cards { padding-left: 1rem; }
 }

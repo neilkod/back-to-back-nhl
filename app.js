@@ -2,7 +2,7 @@
 /* Back-to-Back: rendering + interactions. Depends on algo.js (loaded first). */
 
 const state = {
-  sliderIndex: 3, // default to "Full corridor," where the whole Northeast chain connects
+  sliderIndex: 4, // default to "Add Boston," a reasonable middle ground now that the slider runs wider
   enabledTeams: new Set(TEAM_ORDER),
   overrides: Object.create(null), // runKey -> { date: abbr }
 };
