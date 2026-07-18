@@ -17,8 +17,13 @@ prose. If you're about to type "—" or "–," stop and rephrase.
 
 ## Layout
 
-- `algo.js`: embedded 2026-27 dataset (8 teams + travel-time matrix) and all
-  pure algorithm functions. No DOM code. Shared by both pages.
+- `algo.js`: embedded 2026-27 dataset (13 teams + travel-time matrix) and all
+  pure algorithm functions. No DOM code. Shared by both pages. Teams span
+  three structurally-independent clusters that never link to each other at
+  any tolerance: Northeast/Boston (NYR, NYI, NJ, WSH, PHI, BOS), West Coast
+  (LA, ANA), and Great Lakes (MTL, OTT, TOR, DET, BUF). The slider's last
+  stop (4.5h, "Great Lakes") exists specifically to bridge Ottawa to Toronto
+  (~4.4h), the widest link needed to connect that whole corridor.
 - `index.html` / `app.js`: the planner UI.
 - `how.html` / `how.js`: algorithm walkthrough, calls the real `algo.js`
   functions rather than reimplementing them, including a live-generated
@@ -48,6 +53,24 @@ This is documented in `algo.js`'s dev-check comments and explained on
 `how.html` as an "aha" aside, not silently patched to match the doc's
 number. If the spec doc is ever revised, check whether this note is still
 needed.
+
+## A second, related bug found while adding the Great Lakes teams
+
+The frontier walk in `findRunDateGroups()` tracks a single thread across
+every enabled team's games together. When two structurally unrelated
+clusters both have a home game on the same calendar date, a coincidental
+same-team back-to-back in one cluster could "steal" that date and orphan a
+genuine run-start in the other, silently truncating a real run even though
+the two clusters were never actually linkable. This had been live since the
+original 8-team dataset (LA/ANA's mere presence in the enabled set was
+corrupting the Northeast frontier at the 4.0h stop specifically): the
+"4.0h true longest run is 14 nights" claim that lived in the dev-checks for
+a while was itself wrong. The real answer, even before Great Lakes teams
+existed, was 17 nights (Jan 12 to 28). `teamClusters()` in `algo.js` fixes
+this by computing connected components from the travel matrix and running
+each cluster through its own date-walk, so unrelated clusters can never
+contaminate each other's run detection again. See the dev-checks comment
+block in `algo.js` for the full writeup.
 
 ## Testing
 

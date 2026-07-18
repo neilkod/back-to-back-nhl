@@ -107,8 +107,8 @@
 }</code></pre>
     <p>
       With the frontier fix, that span splits correctly: a 7-night West Coast run (Jan 8-14) and a
-      genuine 14-night corridor run (Jan 15-28). The second one is the real longest trip on the board,
-      even at the widest "Add Boston" setting.
+      genuine 14-night corridor run (Jan 15-28). Widen the tolerance further, to the "Add Boston"
+      setting, and this same corridor run stretches to 17 nights (Jan 12-28).
     </p>
   </section>
 
@@ -163,8 +163,9 @@
     <h2>Worked example: the 14-night corridor run</h2>
     <p>
       This table is generated live on this page by calling the same <code>computeTrips()</code> used
-      on the planner, set to "Full corridor" (3.0h) with every team enabled. It's the longest run in
-      the whole dataset.
+      on the planner, set to "Full corridor" (3.0h) with every team enabled. It's the longest run at
+      that tolerance setting (widen it further and this same run keeps growing, up to 17 nights at
+      "Add Boston").
     </p>
     <div id="worked-example"></div>
   </section>

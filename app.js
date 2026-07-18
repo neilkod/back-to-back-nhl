@@ -250,13 +250,15 @@ function render() {
 
 /* ===== init ===== */
 function init() {
+  const slider = document.getElementById("tolerance-slider");
+  slider.max = String(SLIDER_STOPS.length - 1);
+
   renderStopTicks();
   updateSliderReadout();
   renderTeamChips();
 
   document.getElementById("footer-note").textContent = DATA.meta.note;
 
-  const slider = document.getElementById("tolerance-slider");
   slider.addEventListener("input", () => {
     state.sliderIndex = Number(slider.value);
     state.overrides = Object.create(null); // tolerance change can invalidate prior swaps

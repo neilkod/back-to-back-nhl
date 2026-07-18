@@ -1,8 +1,11 @@
 # Back-to-Back: 2026-27 NHL Trip Planner
 
 A static site that finds runs of consecutive-night NHL home games you can
-actually travel between, for 8 East Coast + Southern California teams
-(Rangers, Islanders, Devils, Capitals, Flyers, Bruins, Kings, Ducks).
+actually travel between, for 13 teams across three corridors: the Northeast
+(Rangers, Islanders, Devils, Capitals, Flyers, Bruins), the Great Lakes
+(Canadiens, Senators, Maple Leafs, Red Wings, Sabres), and Southern
+California (Kings, Ducks). These three groups never link to each other at
+any tolerance, the same way LA and Anaheim never link to the East Coast.
 
 Slide the travel-tolerance slider, filter to the teams you care about, and
 get trip cards grouped by trip length. Each one has a per-night itinerary,

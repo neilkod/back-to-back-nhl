@@ -74,7 +74,10 @@
 
 * { box-sizing: border-box; }
 
-html { color-scheme: dark light; }
+/* Safety net only, not a fix for anything: if you're chasing a horizontal
+   overflow bug, comment this out first so you can actually see it, since
+   this will silently clip content instead of showing a scrollbar. */
+html { color-scheme: dark light; overflow-x: hidden; }
 
 body {
   margin: 0;
@@ -271,9 +274,9 @@ body {
   font-family: var(--font-mono);
   font-size: 0.7rem;
   color: var(--text-faint);
-  padding: 0 2px;
+  padding: 0 20px;
 }
-.stop-ticks span { width: 1px; text-align: center; }
+.stop-ticks span { width: 1px; min-width: 0; text-align: center; white-space: nowrap; }
 
 .slider-helper {
   color: var(--text-dim);
@@ -365,7 +368,9 @@ body {
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
   padding: 0.6rem 0.9rem;
-  white-space: nowrap;
+}
+@media (min-width: 800px) {
+  .live-stat { white-space: nowrap; }
 }
 .live-stat strong { color: var(--ice); font-family: var(--font-mono); font-size: 1.1rem; }
 
@@ -745,8 +750,8 @@ main#results {
 .mini-slider-card .link-no { color: var(--text-faint); text-decoration: line-through; }
 
 @media (max-width: 560px) {
-  .night-row { grid-template-columns: 2.8em 38px 1fr; }
-  .night-time { grid-column: 1 / -1; text-align: left; padding-left: calc(2.8em + 38px + 0.6rem); }
+  .night-row { grid-template-columns: 2.8em 46px 1fr; }
+  .night-row > .night-time { grid-column: 1 / -1; text-align: left; padding-left: calc(2.8em + 46px + 0.6rem); }
   .hop-row { padding-left: 2.8em; }
   .trip-cards { padding-left: 1rem; }
 }
