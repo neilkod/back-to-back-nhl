@@ -17,25 +17,34 @@ prose. If you're about to type "—" or "–," stop and rephrase.
 
 ## Layout
 
-- `algo.js`: embedded 2026-27 dataset (18 teams + travel-time matrix) and all
-  pure algorithm functions. No DOM code. Shared by both pages. Teams span
-  four structurally-independent clusters that never link to each other at
-  any tolerance:
-  - Northeast/Boston: NYR, NYI, NJ, WSH, PHI, BOS
-  - Great Lakes: MTL, OTT, TOR, DET, BUF (needs the 4.5h stop to fully
-    connect, specifically Ottawa to Toronto at ~4.4h)
-  - West Coast/Southwest: LA, ANA, VGK, SJS, UTA. VGK joins LA/ANA at the
-    existing 4.5h stop (~4h either way). SJS needs the 6.0h stop to reach
-    LA/ANA (~5.2 to 5.75h). UTA only connects through VGK (~5.9h to Vegas),
-    not directly to LA/ANA/SJS, so it's reachable at 6.0h but only via that
-    path.
-  - Florida: FLA, TBL, a 2-team island like LA/ANA originally was, linked
-    at ~3.9h (already within the 4.0h stop). Deliberately not bridged to
-    the Northeast cluster (Tampa/Miami to DC is 900+ miles) even though
-    raising the ceiling made that a fair question to ask.
-  These clusters are intentionally never cross-linked. Don't add travel
-  entries between them without checking with Neil first, that's a real
-  product decision, not just a data-completeness one.
+- `algo.js`: embedded 2026-27 dataset (29 teams + travel-time matrix) and all
+  pure algorithm functions. No DOM code. Shared by both pages. As of this
+  writing, teams span these tolerance-scoped clusters (see the note below:
+  clustering is recomputed per tolerance, not fixed, so what's "in" a
+  cluster genuinely depends on the slider position):
+  - Northeast/Great Lakes/Midwest mega-cluster: NYR, NYI, NJ, WSH, PHI,
+    BOS, MTL, OTT, TOR, DET, BUF, CHI, STL, MIN, PIT, CBJ, CAR, NSH.
+    Originally three separate corridors; Pittsburgh bridges Northeast to
+    Great Lakes at just 4.0h (PIT-WSH ~4h, PIT-BUF ~3.3h), and Columbus,
+    Carolina, and Nashville ride along. Full merge is real, not a bug:
+    verified with `computeTrips` directly before trusting it.
+  - West Coast/Southwest: LA, ANA, VGK, SJS, UTA. VGK joins LA/ANA at
+    4.5h (~4h either way). SJS needs 6.25h (~5.2 to 5.75h). UTA only
+    connects through VGK (~5.9h), not directly to LA/ANA/SJS.
+  - Florida: FLA, TBL, linked at ~3.9h (within the 4.0h stop). Deliberately
+    not bridged to the Northeast (Tampa/Miami to DC is 900+ miles) even
+    though the wider ceiling made that a fair question to ask.
+  - Pacific Northwest: VAN, SEA, linked at ~2.4h. Isolated (Seattle to San
+    Jose, the nearest other team, is ~13h).
+  - Alberta: CGY, EDM, linked at ~3h. Isolated (Calgary to Vancouver is
+    ~10.4h).
+  Deliberately excluded after checking: Winnipeg (nearest team, Minneapolis,
+  is ~7h away) and Dallas (nearest team, St. Louis, is ~9.7h away). Neither
+  has a realistic connection to anything in the dataset.
+  Whether two clusters merge is a real product decision (see below), not
+  just a data-completeness one. Don't add a travel-matrix entry between
+  two previously-separate regions without checking real driving times
+  first and confirming with Neil that merging them is wanted.
 - `index.html` / `app.js`: the planner UI.
 - `how.html` / `how.js`: algorithm walkthrough, calls the real `algo.js`
   functions rather than reimplementing them, including a live-generated
@@ -66,22 +75,41 @@ This is documented in `algo.js`'s dev-check comments and explained on
 number. If the spec doc is ever revised, check whether this note is still
 needed.
 
-## A second, related bug found while adding the Great Lakes teams
+## A second, related bug, found twice
 
 The frontier walk in `findRunDateGroups()` tracks a single thread across
-every enabled team's games together. When two structurally unrelated
-clusters both have a home game on the same calendar date, a coincidental
-same-team back-to-back in one cluster could "steal" that date and orphan a
-genuine run-start in the other, silently truncating a real run even though
-the two clusters were never actually linkable. This had been live since the
-original 8-team dataset (LA/ANA's mere presence in the enabled set was
-corrupting the Northeast frontier at the 4.0h stop specifically): the
+every enabled team's games together. When two teams that can't currently
+link to each other both have a home game on the same calendar date, a
+coincidental same-team back-to-back on one side can "steal" that date and
+orphan a genuine run-start on the other, silently truncating a real run.
+
+First pass (while adding the Great Lakes teams): fixed by `teamClusters()`,
+which computed connected components from the whole travel matrix and ran
+each cluster through its own date-walk. This had been live since the
+original 8-team dataset. LA/ANA's mere presence in the enabled set was
+corrupting the Northeast frontier at the 4.0h stop specifically, and the
 "4.0h true longest run is 14 nights" claim that lived in the dev-checks for
 a while was itself wrong. The real answer, even before Great Lakes teams
-existed, was 17 nights (Jan 12 to 28). `teamClusters()` in `algo.js` fixes
-this by computing connected components from the travel matrix and running
-each cluster through its own date-walk, so unrelated clusters can never
-contaminate each other's run detection again. See the dev-checks comment
+existed, was 17 nights (Jan 12 to 28).
+
+Second pass (while adding Pittsburgh, Columbus, Carolina, Nashville): the
+first fix wasn't enough. `teamClusters()` grouped teams by "ever reachable
+at *some* tolerance," which is right for permanently disconnected regions
+but wrong for teams that share a wider-tolerance cluster while still being
+unreachable to each other *at the tolerance actually being queried*.
+Toronto and Pittsburgh only link once tolerance reaches Boston-level
+distances, so at the 3.0h stop, in the SAME structural cluster, Toronto's
+own back-to-back was again stealing a date from a real Northeast run, this
+time within one cluster instead of across two. Fixed by making
+`teamClusters(tolerance)` take the tolerance and only union teams whose
+direct link is `<= tolerance`, recomputing clusters fresh at every slider
+position instead of once. The "4.0h true longest run is 17 nights" claim
+that replaced the 14-night one was itself then superseded again: with
+Pittsburgh in the mix, the true 4.0h answer is 19 nights (Jan 13 to 31).
+
+Moral: any time a run's boundaries look surprising after adding teams,
+check with `computeTrips` directly (hop distances, exact date range) before
+assuming either the old or new number is right. See the dev-checks comment
 block in `algo.js` for the full writeup.
 
 ## Testing

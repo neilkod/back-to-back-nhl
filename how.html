@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <script src="theme.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="https://assets.nhle.com/logos/nhl/svg/NHL_light.svg" type="image/svg+xml">
 <title>How this works: Back-to-Back</title>
 <meta name="description" content="How the Back-to-Back trip planner finds travelable runs of NHL home games.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -107,8 +108,20 @@
 }</code></pre>
     <p>
       With the frontier fix, that span splits correctly: a 7-night West Coast run (Jan 8-14) and a
-      genuine 14-night corridor run (Jan 15-28). Widen the tolerance further, to the "Add Boston"
-      setting, and this same corridor run stretches to 17 nights (Jan 12-28).
+      genuine 14-night corridor run (Jan 15-28). Widen the tolerance further, to the "Add Pittsburgh"
+      setting, and this same corridor run stretches to 19 nights (Jan 13-31), since Pittsburgh bridges
+      the Northeast and Great Lakes teams into one thread.
+    </p>
+    <p class="aha">
+      One more wrinkle. Toronto and Pittsburgh eventually link, once tolerance reaches Boston-level
+      distances, so at wide tolerances they end up in the same neighborhood. But at a lower tolerance,
+      before that link exists yet, walking their games through one shared frontier let Toronto's own
+      back-to-back steal a night from an unrelated Northeast run, the same trap as above, just between
+      two groups instead of within one calendar. The fix: recompute which teams can actually reach each
+      other <em>at the current tolerance</em>, and track a separate frontier per group. Get this wrong
+      and the bug hides well: it only shows up once you have several regions that link to each other
+      at some tolerances but not others, which is exactly what happens once a site like this covers
+      more than one part of the country.
     </p>
   </section>
 
@@ -164,8 +177,8 @@
     <p>
       This table is generated live on this page by calling the same <code>computeTrips()</code> used
       on the planner, set to "Full corridor" (3.0h) with every team enabled. It's the longest run at
-      that tolerance setting (widen it further and this same run keeps growing, up to 17 nights at
-      "Add Boston").
+      that tolerance setting (widen it further and this same run keeps growing, up to 19 nights at
+      "Add Pittsburgh").
     </p>
     <div id="worked-example"></div>
   </section>

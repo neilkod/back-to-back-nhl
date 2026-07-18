@@ -1,14 +1,23 @@
 # Back-to-Back: 2026-27 NHL Trip Planner
 
 A static site that finds runs of consecutive-night NHL home games you can
-actually travel between, for 18 teams across four corridors: the Northeast
-(Rangers, Islanders, Devils, Capitals, Flyers, Bruins), the Great Lakes
-(Canadiens, Senators, Maple Leafs, Red Wings, Sabres), the West Coast and
-Southwest (Kings, Ducks, Golden Knights, Sharks, Mammoth), and Florida
-(Panthers, Lightning). These four groups never link to each other at any
-tolerance. Some of them didn't even connect internally until the slider
-was widened to 6 hours to bridge San Jose into the West Coast group and
-Utah into Vegas.
+actually travel between, for 29 teams across five corridors:
+
+- A Northeast/Great Lakes/Midwest mega-corridor (Rangers, Islanders,
+  Devils, Capitals, Flyers, Bruins, Canadiens, Senators, Maple Leafs, Red
+  Wings, Sabres, Blackhawks, Blues, Wild, Penguins, Blue Jackets,
+  Hurricanes, Predators). Started as separate Northeast and Great Lakes
+  groups; Pittsburgh alone bridges them at a 4.0h tolerance.
+- The West Coast and Southwest (Kings, Ducks, Golden Knights, Sharks,
+  Mammoth)
+- Florida (Panthers, Lightning)
+- The Pacific Northwest (Canucks, Kraken)
+- Alberta (Flames, Oilers)
+
+These corridors never link to each other at any tolerance the slider
+offers (up to 6.25h). A couple of teams within them are only reachable via
+a specific bridge team rather than directly (Utah only connects through
+Vegas, for instance), which is real geography, not an oversight.
 
 Slide the travel-tolerance slider, filter to the teams you care about, and
 get trip cards grouped by trip length. Each one has a per-night itinerary,
